@@ -181,7 +181,7 @@ class BackendSystemTest:
 def main(argv):
 	b = BackendSystemTest(argv)
 	b.dumpObject()
+	b.watchLog()
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
-b.watchLog()
