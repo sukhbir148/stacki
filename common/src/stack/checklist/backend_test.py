@@ -66,7 +66,7 @@ class BackendSystemTest:
 		self.dhcp_start = 0
 		self.status_arr_index = 0
 		self.status_arr = [self.process_dhcp, self.process_tftp]
-
+'''
 	@timeit	
 	def process_dhcp(self, line):
 		line_arr = line.split()
@@ -151,7 +151,7 @@ class BackendSystemTest:
 			self.tftp_status_index = self.tftp_status_index + 1
 			self.status_arr_index = self.status_arr_index + 1
 			return
-
+'''
 	def watchLog(self):
 		with open("/var/log/messages", "r") as file:
 			# Seek to end of file
