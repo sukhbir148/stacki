@@ -13,9 +13,6 @@ class Plugin(stack.commands.Plugin):
 	def provides(self):
 		return 'dhcp'
 
-	def precedes(self):
-		return ['tftp']
-
 	def process_dhcp(self, line, backendObj):
 		line_arr = line.split()
 		daemon_name = line_arr[2]
@@ -34,7 +31,7 @@ class Plugin(stack.commands.Plugin):
 				if mac == backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
 					dhcp_start = time.time()
-					print('1. DHCPDISCOVER - Received')
+					print('1. Frontend - DHCPDISCOVER - Received')
 					return
 
 			elif msg_type == 'DHCPOFFER':
@@ -43,7 +40,7 @@ class Plugin(stack.commands.Plugin):
 
 				if ip == backendObj['ip'] and mac == backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
-					print('2. DHCPOFFER - Received')
+					print('2. Frontend - DHCPOFFER - Received')
 					return
 
 			elif msg_type == 'DHCPREQUEST':
@@ -52,7 +49,7 @@ class Plugin(stack.commands.Plugin):
 
 				if ip == backendObj['ip'] and mac == backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
-					print('3. DHCPREQUEST - Received')
+					print('3. Frontend - DHCPREQUEST - Received')
 					return
 
 			elif msg_type == 'DHCPACK':
@@ -62,7 +59,7 @@ class Plugin(stack.commands.Plugin):
 				if ip == backendObj['ip'] and mac == backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
 					self.status_arr_index = self.status_arr_index + 1
-					print('4. DHCPACK - Received')
+					print('4. Frontend - DHCPACK - Received')
 					return
 
 	def process_tftp(self, line, backendObj):
@@ -85,17 +82,17 @@ class Plugin(stack.commands.Plugin):
 			backend_hex_ip = '{:02X}{:02X}{:02X}{:02X}'.format(*map(int, backend_ip_arr))
 
 			if backend_hex_ip == pxe_arr[1]:
-				print('5. TFTP read file request - Received')
+				print('5. Frontend - TFTP read file request - Received')
 				self.tftp_status_index = self.tftp_status_index + 1
 				return
 
 		if self.tftp_status_index == 1 and pxe_file == backendObj['kernel']:
-			print('6. VMLinuz read file request - Received')
+			print('6. Frontend - VMLinuz read file request - Received')
 			self.tftp_status_index = self.tftp_status_index + 1
 			return
 
 		if self.tftp_status_index == 2 and pxe_file == backendObj['ramdisk']:
-			print('7. Initrd read file request - Received')
+			print('7. Frontend - Initrd read file request - Received')
 			self.tftp_status_index = self.tftp_status_index + 1
 			self.status_arr_index = self.status_arr_index + 1
 			return

@@ -30,7 +30,7 @@ class Plugin(stack.commands.Plugin):
 		profile_cgi = line_arr[5]
 
 		if '/install/sbin/profile.cgi' in profile_cgi and line_arr[6] == HTTP_SUCCESS:
-			print('8. Autoyast file successfully sent to backend')
+			print('8. Frontend - Autoyast file successfully sent to backend')
 			return True
 
 		return False
