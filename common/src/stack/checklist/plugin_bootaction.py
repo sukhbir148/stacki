@@ -10,10 +10,10 @@ import time
 class Plugin(stack.commands.Plugin):
 
 	def provides(self):
-		return 'autoyast'
+		return 'bootaction'
 
 	def requires(self):
-		return ['dhcp']
+		return ['backend']
 
 	def parse_accesslog(self, line, backendObj):
 		line_arr = shlex.split(line)
@@ -27,10 +27,11 @@ class Plugin(stack.commands.Plugin):
 			return
 		
 		HTTP_SUCCESS = '200'
+		SET_BOOTACTION = 'params={\"action\":\"os\"}'
 		profile_cgi = line_arr[5]
 
-		if '/install/sbin/profile.cgi' in profile_cgi and line_arr[6] == HTTP_SUCCESS:
-			print('8. Frontend - Autoyast file successfully sent to backend')
+		if SET_BOOTACTION in profile_cgi and line_arr[6] == HTTP_SUCCESS:
+			print('14. Frontend - Bootaction set to "os"')
 			return True
 
 		return False

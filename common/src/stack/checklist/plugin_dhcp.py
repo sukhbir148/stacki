@@ -28,7 +28,7 @@ class Plugin(stack.commands.Plugin):
 				mac = line_arr[5]
 				interface = line_arr[7]
 
-				if mac == backendObj['mac']:
+				if mac in backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
 					dhcp_start = time.time()
 					print('1. Frontend - DHCPDISCOVER - Received')
@@ -37,8 +37,8 @@ class Plugin(stack.commands.Plugin):
 			elif msg_type == 'DHCPOFFER':
 				ip   = line_arr[5]
 				mac  = line_arr[7]
-
-				if ip == backendObj['ip'] and mac == backendObj['mac']:
+	
+				if ip in backendObj['ip'] and mac in backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
 					print('2. Frontend - DHCPOFFER - Received')
 					return
@@ -47,7 +47,7 @@ class Plugin(stack.commands.Plugin):
 				ip = line_arr[5]
 				mac = line_arr[8]
 
-				if ip == backendObj['ip'] and mac == backendObj['mac']:
+				if ip in backendObj['ip'] and mac in backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
 					print('3. Frontend - DHCPREQUEST - Received')
 					return
@@ -56,10 +56,16 @@ class Plugin(stack.commands.Plugin):
 				ip  = line_arr[5]
 				mac = line_arr[7]
 
-				if ip == backendObj['ip'] and mac == backendObj['mac']:
+				if ip in backendObj['ip'] and mac in backendObj['mac']:
 					self.dhcp_status_index = self.dhcp_status_index + 1
 					self.status_arr_index = self.status_arr_index + 1
 					print('4. Frontend - DHCPACK - Received')
+					#
+					# Set the IP, MAC of backend based on DHCPACK
+					# For easr of processing later.
+					#
+					self.owner.dictObj['ip'] = ip
+					self.owner.dictObj['mac'] = mac
 					return
 
 	def process_tftp(self, line, backendObj):

@@ -31,10 +31,10 @@ class Command(stack.commands.Command):
 	time_arr    = {'process_dhcp' : 60, 'process_tftp' : 120}
 
 	def run(self, params, args):
-		dictObj = {}
+		self.dictObj = {}
 
 		if len(args) == 1:
-			dictObj['hostname'] = args[0]
+			self.dictObj['hostname'] = args[0]
 		else:
 			raise ArgRequired(self, 'hostname')
 
@@ -46,18 +46,28 @@ class Command(stack.commands.Command):
 
 		bootaction = op[0]['installaction']
 
+		op = stack.api.Call('list.network', ['pxe=True'])
+		pxe_network_list = []
+		for o in op:
+			pxe_network_list.append(o['network'])
+
+		ip_list  = []
+		mac_list = []
 		op = stack.api.Call('list.host.interface', args)
 		for o in op:
 			# Check with Anoop
-			if o['default']:
-				dictObj['ip']  = o['ip']
-				dictObj['mac'] = o['mac']
+			if o['network'] in pxe_network_list:
+				ip_list.append(o['ip'])
+				mac_list.append(o['mac'])
+
+		self.dictObj['ip']  = ip_list
+		self.dictObj['mac'] = mac_list
 
 		op = stack.api.Call('list.host.boot', args)
 		atype = op[0]['action']
 
 		op = stack.api.Call('list.bootaction', ['bootaction=%s' % bootaction, 'type=%s' % atype])
-		dictObj['kernel']  = op[0]['kernel']
-		dictObj['ramdisk'] = op[0]['ramdisk']
+		self.dictObj['kernel']  = op[0]['kernel']
+		self.dictObj['ramdisk'] = op[0]['ramdisk']
 
-		self.runPlugins(dictObj)
+		self.runPlugins(self.dictObj)
